@@ -1,0 +1,15 @@
+木兰宽松许可证，第2版
+Mulan Permissive Software License，Version 2 (MulanPSL-2.0)
+=====================================================================
+
+Mulan Permissive Software License, Version 2
+
+翻译：将 License ID 链接到 https://license.coscl.org.cn/MulanPSL2/
+可以看到完整法律文本。本文件为社区引用索引。
+
+对于本公开仓库:
+  (a) 此许可证适用于 robonix_manifest.yaml 与 README.md
+      等公开发表的元数据与描述文本。
+  (b) 大脑项目2 (Brain Next) 的源代码、权重、训练数据、
+      实现细节、校准数据均不随本仓库发布, 也不授予任何权利
+      或许可。该等内容保留其各自的专有许可与商业机密状态。
