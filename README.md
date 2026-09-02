@@ -370,7 +370,7 @@ Cognitive Brain), capability 声明与 Robonix contract 在抽象
 ## 联系
 
 社区相关问题请通过本仓库 GitHub Issues 或 Robonix 社区频道
-提出。商务与技术合作联系主体: **SomaOS (Beijing) Technology Development Co., Ltd.**。
+提出。商务与技术合作联系主体: **Beijing Jingxuan Technology**。
 
 ---
 
@@ -379,24 +379,3 @@ Cognitive Brain), capability 声明与 Robonix contract 在抽象
 > 数据等技术与商业秘密不随本仓库分发, 也不会在任何公共
 > 媒体、文档或讨论中披露。** 对技术实现细节的好奇, 欢迎
 > 走合法商务合作流程。
-
-
----
-
-## Deployment Status
-
-This repository is a **technology showcase shell** for the SomaOS Next Motor Brain. It intentionally contains only the catalog manifest, technical whitepaper (this README), and license — no source code, model weights, or deployment configs are included.
-
-**Deployment configuration (primitive drivers, service definitions, skill packages) will be published as separate Robonix packages upon partnership agreement.** This approach protects proprietary implementation details while ensuring full catalog compliance.
-
-| Component | Status |
-|---|---|
-| `robonix_manifest.yaml` | Published (catalog metadata + capabilities declaration) |
-| `README.md` | Published (technical whitepaper, 18+ innovation highlights) |
-| `LICENSE` | Published (MulanPSL-2.0) |
-| `assets/robot.jpg` | Published (preview image) |
-| Primitive drivers | Available upon partnership |
-| Service configs | Available upon partnership |
-| Skill packages | Available upon partnership |
-
-For collaboration inquiries: **gm@jxt.asia**
