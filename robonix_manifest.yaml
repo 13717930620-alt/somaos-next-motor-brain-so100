@@ -33,7 +33,7 @@ catalog:
     - low_resource
     - zero_dependency
   maintainers:
-    - SomaOS Brain Next Team <somaos-next@noreply.local>
+    - SomaOS Brain Next Team <gm@jxt.asia>
 
 # ---------------------------------------------------------------------
 # 对外声明的能力 (Robonix contract 级抽象)
