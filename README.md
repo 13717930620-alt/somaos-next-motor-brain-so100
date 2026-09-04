@@ -14,7 +14,7 @@
 | 验证状态 (Validation) | **仅仿真验证 (simulation only)** — 安全门控过滤与轨迹跟随执行链路已对虚拟舵机模型闭环运行 |
 | 真机状态 (Real robot) | **尚未在真实 SO-100 硬件部署** — 真机集成进行中 |
 | 计算环境 (仿真) | x86 桌面, Windows 11 / Ubuntu 22.04 |
-| 证据形式 | ① 本仓库可运行 demo (确定性, 结果可复现) ② 闭源容器 (demo/ service 双模式) ③ 运行录屏 (录制中, 链接将更新到 PR 线程) |
+| 证据形式 | ① 本仓库可运行 demo (确定性, 结果可复现) ② 闭源二进制运行时 (GitHub Release [v1.1.0-bin](https://github.com/13717930620-alt/somaos-next-motor-brain-so100/releases/tag/v1.1.0-bin), mock 后端 `/health` 自检通过) ③ 闭源容器 (demo/ service 双模式) |
 
 ---
 
@@ -41,6 +41,31 @@ summary: total=30  PASS=18  CLAMPED=2  REJECTED=2  ESTOP_LATCH=8
 
 summary: waypoints=3  steps=124  overall_RMS=1.35deg  worst_err=2.34deg
 ```
+
+---
+
+## 闭源二进制运行时 (GitHub Release — 下载即跑, 免源码)
+
+完整运动脑运行时已编译为 V8 字节码发布 (无任何可读源码 / 权重 / 凭据):
+
+1. 从 [Release v1.1.0-bin](https://github.com/13717930620-alt/somaos-next-motor-brain-so100/releases/tag/v1.1.0-bin)
+   下载 `somaos-brain-next-bin-1.1.0.zip`
+2. 解压后仅需 Node.js 18+ (零外部依赖, 纯 Node 内置模块):
+
+```bash
+node loader.js
+```
+
+默认 mock 机器人后端启动, 监听 `127.0.0.1:3002`。自检:
+
+```bash
+curl http://127.0.0.1:3002/health
+# -> 200 OK (JSON 健康/模块状态)
+```
+
+Web 控制台: `http://127.0.0.1:3002/console`。对接真实 SO-100 驱动
+(`SOMAOS_ROBOT_BACKEND=http`, 驱动端口 3110) 与本地 LLM/VLM 的可选配置
+详见包内 RUN.md。
 
 ---
 
