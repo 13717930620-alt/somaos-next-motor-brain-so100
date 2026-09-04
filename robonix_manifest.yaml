@@ -15,9 +15,10 @@ catalog:
     Validation status: SIMULATION ONLY — the safety-gate filtering and
     trajectory-following execution paths are validated against a virtual
     servo model; no real SO-100 hardware deployment yet (real-robot
-    integration is in progress). Distributed as a closed-source container;
-    sources and model weights are not published. Runnable demo packages are
-    included in this repository.
+    integration is in progress). Distributed as a closed-source compiled
+    binary runtime (downloadable from GitHub Release) and a closed-source
+    container; sources and model weights are not published. Runnable demo
+    packages are included in this repository.
   license: MulanPSL-2.0
   tags:
     - robot
@@ -54,6 +55,15 @@ service:
     config:
       delivery: closed_source_container
       container: ghcr.io/13717930620-alt/somaos-motor-brain:latest
+      sources_published: false
+      weights_published: false
+  - name: somaos_motor_binary_runtime
+    path: ./
+    config:
+      delivery: closed_source_binary
+      release: https://github.com/13717930620-alt/somaos-next-motor-brain-so100/releases/tag/v1.1.0-bin
+      entry: node loader.js
+      healthcheck: http://127.0.0.1:3002/health
       sources_published: false
       weights_published: false
 
