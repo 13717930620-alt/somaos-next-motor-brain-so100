@@ -1,14 +1,8 @@
 manifestVersion: 1
-name: somaos-next-motor-brain-so100-deploy
-# =====================================================================
-# Robonix 社区公开发布清单 —— 大脑项目2 (运动执行脑 SO-100 集成版)
-# 本 manifest 仅包含可公开的高层元数据。
-# 任何源代码、模型权重、训练数据、协议细节、校准数据等机密
-# 内容均不随本仓库发布。
-# =====================================================================
+name: somaos-next-motor-brain-so100-sim-deploy
 catalog:
   name: robonix.robot.somaos_next.motor_brain_so100
-  version: 1.0.0
+  version: 1.1.0
   description: >
     SomaOS Brain Next — a lightweight, zero-dependency motor-execution
     robot brain targeting the Feetech SO-100 6-DoF serial manipulator.
@@ -18,6 +12,12 @@ catalog:
     local experience-based learning. Designed to run on resource-constrained
     embedded-class compute (Raspberry Pi 4+ / Jetson Nano+) while keeping
     safety always active.
+    Validation status: SIMULATION ONLY — the safety-gate filtering and
+    trajectory-following execution paths are validated against a virtual
+    servo model; no real SO-100 hardware deployment yet (real-robot
+    integration is in progress). Distributed as a closed-source container;
+    sources and model weights are not published. Runnable demo packages are
+    included in this repository.
   license: MulanPSL-2.0
   tags:
     - robot
@@ -25,6 +25,7 @@ catalog:
     - so100
     - feetech
     - manipulator
+    - simulation_validated
     - motor_brain
     - execution_only
     - realtime_safety
@@ -35,27 +36,51 @@ catalog:
   maintainers:
     - SomaOS Brain Next Team <gm@jxt.asia>
 
-# ---------------------------------------------------------------------
-# 对外声明的能力 (Robonix contract 级抽象)
-# ---------------------------------------------------------------------
+primitive:
+  - name: safety_gate_filter
+    path: ./demos/safety_gate
+    config:
+      mode: demo
+  - name: traj_follow_executor
+    path: ./demos/traj_follow
+    config:
+      mode: demo
+      seed: 3
+      hz: 20
+
+service:
+  - name: somaos_motor_runtime
+    path: ./docker
+    config:
+      delivery: closed_source_container
+      container: ghcr.io/13717930620-alt/somaos-motor-brain:latest
+      sources_published: false
+      weights_published: false
+
+skill:
+  - name: grasp_sequence_guard
+    path: ./demos/safety_gate
+    config:
+      mode: demo
+
 capabilities:
-  # — 感知能力 (入参能力, 不实现相机/麦克风硬件驱动本身)
   - name: robonix/primitive/camera/rgb
   - name: robonix/primitive/audio/speech_in
-
-  # — 运动能力 (SO-100 六轴 + 夹爪, 强实时路径)
   - name: robonix/primitive/manipulator/move_to_pose
   - name: robonix/primitive/manipulator/grasp
   - name: robonix/primitive/manipulator/release
-
-  # — 高层能力
-  - name: robonix/service/vla.inference        # 接外部 VLA (可插拔)
-  - name: robonix/service/experience_replay    # 经验回放学习
-
-  # — 安全 (双重动作筛选 + 扭矩急停)
+  - name: robonix/service/vla_inference
+  - name: robonix/service/experience_replay
   - name: robonix/primitive/safety/emergency_stop
 
-# ---------------------------------------------------------------------
-# 与主项目相同: 整体大脑部署, 不依赖 robonix standard packages。
-# unresolved deps → CI warning only, 不影响收录。
-# ---------------------------------------------------------------------
+deploy_dependencies:
+  - name: robonix/primitive/camera
+    version: ">=1.0.0"
+  - name: robonix/primitive/audio
+    version: ">=1.0.0"
+  - name: robonix/primitive/manipulator
+    version: ">=1.0.0"
+  - name: robonix/primitive/safety
+    version: ">=1.0.0"
+  - name: robonix/service/vla_inference
+    version: ">=1.0.0"
