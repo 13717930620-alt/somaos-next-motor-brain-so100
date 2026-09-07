@@ -11,10 +11,10 @@
 | 项 | 状态 |
 |---|---|
 | 目标平台 (Target) | Feetech SO-100 六轴串口机械臂 |
-| 验证状态 (Validation) | **仅仿真验证 (simulation only)** — 安全门控过滤与轨迹跟随执行链路已对虚拟舵机模型闭环运行 |
+| 验证状态 (Validation) | **仅仿真验证 (simulation only)** — 安全门控过滤与轨迹跟随执行链路已对虚拟舵机模型闭环运行; v1.2.0 目标理解管线经 15 项单元测试 + mock 后端端到端验证 |
 | 真机状态 (Real robot) | **尚未在真实 SO-100 硬件部署** — 真机集成进行中 |
 | 计算环境 (仿真) | x86 桌面, Windows 11 / Ubuntu 22.04 |
-| 证据形式 | ① 本仓库可运行 demo (确定性, 结果可复现) ② 闭源二进制运行时 (GitHub Release [v1.1.0-bin](https://github.com/13717930620-alt/somaos-next-motor-brain-so100/releases/tag/v1.1.0-bin), mock 后端 `/health` 自检通过) ③ 闭源容器 (demo/ service 双模式) |
+| 证据形式 | ① 本仓库可运行 demo (确定性, 结果可复现) ② 闭源二进制运行时 (GitHub Release [v1.2.0-bin](https://github.com/13717930620-alt/somaos-next-motor-brain-so100/releases/tag/v1.2.0-bin), mock 后端 `/health` 与 `POST /goal` 中英双语全链路自检通过) ③ 闭源容器 (demo/ service 双模式) |
 
 ---
 
@@ -44,12 +44,39 @@ summary: waypoints=3  steps=124  overall_RMS=1.35deg  worst_err=2.34deg
 
 ---
 
+## 目标理解管线 (Goal Understanding Pipeline — v1.2.0 新增, 概念层)
+
+v1.2.0 在原「安全执行内核」之上增加了自然语言目标入口 `POST /goal`
+(中英双语)。管线分四级, 每级均有确定性回退, 任何一级失败不影响安全
+执行链路:
+
+1. **意图解析 (Intent Parsing)** — 将自然语言指令解析为严格 JSON Schema
+   的意图对象 (10 类意图: pick / place / navigate / home / demonstrate /
+   stop 等, 含颜色/类别/方位槽位)。主路径为 LLM function-calling,
+   回退路径为确定性正则规则; 全部结果经 Schema 校验 + LRU 缓存。
+2. **视觉落地 (Vision Grounding)** — 将「红色的杯子」这类指称解析为
+   场景中的具体物体 ID (VLM function-calling 主路径 + 属性匹配确定性
+   回退), 并写入符号-实体语义绑定表 (带半衰期衰减)。
+3. **语义技能路由 (Semantic Skill Routing)** — BM25 与嵌入向量混合打
+   分, 支持 CJK bigram 分词与中英双语技能模板, 与既有正则路由并存
+   (语义置信度占优时优先)。
+4. **VLA 热插拔策略 (Hot-pluggable VLA Policy)** — 策略层通过 HTTP 调
+   用可插拔 VLA sidecar (默认 Groot N1.7, `SOMAOS_GROOT_URL`), 三级降
+   级: 高置信 → 直接采用; 中置信 → 与确定性策略混合; 不可用/低置信 →
+   内置确定性策略兜底。换模型 = 改一行 URL。
+
+安全闭环保持不变: 意图置信度阈值 + 技能置信度阈值 → 世界模型动作评
+估 → 全局工作空间竞争提交 → 双层动作过滤执行 → 奖励与经验回写。
+以上均为公开可说明的算法层级描述, 不含实现细节。
+
+---
+
 ## 闭源二进制运行时 (GitHub Release — 下载即跑, 免源码)
 
 完整运动脑运行时已编译为 V8 字节码发布 (无任何可读源码 / 权重 / 凭据):
 
-1. 从 [Release v1.1.0-bin](https://github.com/13717930620-alt/somaos-next-motor-brain-so100/releases/tag/v1.1.0-bin)
-   下载 `somaos-brain-next-bin-1.1.0.zip`
+1. 从 [Release v1.2.0-bin](https://github.com/13717930620-alt/somaos-next-motor-brain-so100/releases/tag/v1.2.0-bin)
+   下载 `somaos-brain-next-bin-1.2.0.zip`
 2. 解压后仅需 Node.js 18+ (零外部依赖, 纯 Node 内置模块):
 
 ```bash
@@ -126,11 +153,13 @@ docker run --rm -e SOMAOS_WEIGHT_URL="..." -e SOMAOS_WEIGHT_SHA256="..." \
 
 ### 栈6 1GB RAM / 4核 ARM 低资源天地板限制
 
+### 栈7 自然语言目标理解管线 (意图解析 → 视觉落地 → 语义技能路由, v1.2.0)
+
 ---
 
 ## 对外接口
 
-- **标准**: RCAN 指令入口 / HTTP 本地控制接口 / 可插 VLA 上游模型接入 / ESTOP 制动主线路输入 / 状态事件回传
+- **标准**: RCAN 指令入口 / HTTP 本地控制接口 / **自然语言目标入口 `POST /goal` (中英双语, 严格 JSON 意图 Schema, v1.2.0)** / 可插 VLA 上游模型接入 (含 VLA 策略 sidecar `SOMAOS_GROOT_URL`) / ESTOP 制动主线路输入 / 状态事件回传
 - **部署方式**: 独立 robot entry，与 cognitive_brain 协同使用 RCAN 语义接口层对接
 
 ---
