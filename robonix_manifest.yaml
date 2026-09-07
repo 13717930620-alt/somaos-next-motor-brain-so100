@@ -2,23 +2,30 @@ manifestVersion: 1
 name: somaos-next-motor-brain-so100-sim-deploy
 catalog:
   name: robonix.robot.somaos_next.motor_brain_so100
-  version: 1.1.0
+  version: 1.2.0
   description: >
     SomaOS Brain Next — a lightweight, zero-dependency motor-execution
     robot brain targeting the Feetech SO-100 6-DoF serial manipulator.
-    Focuses on deterministic runtime safety, dual-layer
-    action filtering (intentional gating + instantaneous emergency stop),
-    RCAN-standard command ingestion, HTTP-transport motor dispatch, and
-    local experience-based learning. Designed to run on resource-constrained
+    Focuses on deterministic runtime safety, dual-layer action filtering
+    (intentional gating + instantaneous emergency stop), RCAN-standard
+    command ingestion, HTTP-transport motor dispatch, and local
+    experience-based learning. Version 1.2.0 adds a natural-language goal
+    pipeline: strict-schema intent parsing (LLM function-calling with a
+    deterministic regex fallback), vision-based reference grounding
+    (color/type/location to object id), semantic skill routing with
+    bilingual zh/en template matching, and a hot-pluggable VLA policy
+    endpoint with multi-tier graceful degradation to the built-in
+    deterministic policy. Designed to run on resource-constrained
     embedded-class compute (Raspberry Pi 4+ / Jetson Nano+) while keeping
     safety always active.
     Validation status: SIMULATION ONLY — the safety-gate filtering and
     trajectory-following execution paths are validated against a virtual
-    servo model; no real SO-100 hardware deployment yet (real-robot
-    integration is in progress). Distributed as a closed-source compiled
-    binary runtime (downloadable from GitHub Release) and a closed-source
-    container; sources and model weights are not published. Runnable demo
-    packages are included in this repository.
+    servo model, and the goal pipeline is validated by unit tests plus
+    end-to-end runs against a mock robot backend; no real SO-100 hardware
+    deployment yet (real-robot integration is in progress). Distributed
+    as a closed-source compiled binary runtime (downloadable from GitHub
+    Release) and a closed-source container; sources and model weights are
+    not published. Runnable demo packages are included in this repository.
   license: MulanPSL-2.0
   tags:
     - robot
@@ -34,6 +41,11 @@ catalog:
     - rcan
     - low_resource
     - zero_dependency
+    - intent_parsing
+    - vision_grounding
+    - semantic_routing
+    - bilingual_zh_en
+    - vla_hot_plug
   maintainers:
     - SomaOS Brain Next Team <gm@jxt.asia>
 
@@ -61,7 +73,7 @@ service:
     path: ./
     config:
       delivery: closed_source_binary
-      release: https://github.com/13717930620-alt/somaos-next-motor-brain-so100/releases/tag/v1.1.0-bin
+      release: https://github.com/13717930620-alt/somaos-next-motor-brain-so100/releases/tag/v1.2.0-bin
       entry: node loader.js
       healthcheck: http://127.0.0.1:3002/health
       sources_published: false
@@ -79,6 +91,9 @@ capabilities:
   - name: robonix/primitive/manipulator/move_to_pose
   - name: robonix/primitive/manipulator/grasp
   - name: robonix/primitive/manipulator/release
+  - name: robonix/service/intent_understanding
+  - name: robonix/service/vision_grounding
+  - name: robonix/service/semantic_memory
   - name: robonix/service/vla_inference
   - name: robonix/service/experience_replay
   - name: robonix/primitive/safety/emergency_stop
