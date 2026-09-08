@@ -2,7 +2,7 @@ manifestVersion: 1
 name: somaos-next-motor-brain-so100-sim-deploy
 catalog:
   name: robonix.robot.somaos_next.motor_brain_so100
-  version: 1.2.0
+  version: 1.2.1
   description: >
     SomaOS Brain Next — a lightweight, zero-dependency motor-execution
     robot brain targeting the Feetech SO-100 6-DoF serial manipulator.
@@ -15,7 +15,9 @@ catalog:
     (color/type/location to object id), semantic skill routing with
     bilingual zh/en template matching, and a hot-pluggable VLA policy
     endpoint with multi-tier graceful degradation to the built-in
-    deterministic policy. Designed to run on resource-constrained
+    deterministic policy. Version 1.2.1 replaces V8 bytecode with portable
+    obfuscated JavaScript so the runtime works on any Node.js 18+ LTS
+    across Linux, macOS, and Windows. Designed to run on resource-constrained
     embedded-class compute (Raspberry Pi 4+ / Jetson Nano+) while keeping
     safety always active.
     Validation status: SIMULATION ONLY — the safety-gate filtering and
@@ -23,9 +25,10 @@ catalog:
     servo model, and the goal pipeline is validated by unit tests plus
     end-to-end runs against a mock robot backend; no real SO-100 hardware
     deployment yet (real-robot integration is in progress). Distributed
-    as a closed-source compiled binary runtime (downloadable from GitHub
-    Release) and a closed-source container; sources and model weights are
-    not published. Runnable demo packages are included in this repository.
+    as a closed-source obfuscated JavaScript runtime (downloadable from
+    GitHub Release, runs on any Node.js 18+ on any OS) and a closed-source
+    container; sources and model weights are not published. Runnable demo
+    packages are included in this repository.
   license: MulanPSL-2.0
   tags:
     - robot
@@ -73,7 +76,7 @@ service:
     path: ./
     config:
       delivery: closed_source_binary
-      release: https://github.com/13717930620-alt/somaos-next-motor-brain-so100/releases/tag/v1.2.0-bin
+      release: https://github.com/13717930620-alt/somaos-next-motor-brain-so100/releases/tag/v1.2.1-bin
       entry: node loader.js
       healthcheck: http://127.0.0.1:3002/health
       sources_published: false
