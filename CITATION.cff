@@ -1,0 +1,28 @@
+cff-version: 1.2.0
+title: "SomaOS Brain Next: Modular Pipeline Robot Brain for SO-100 6-DoF Dual-Arm Platform"
+message: "If you use this software, please cite it as below."
+type: software
+authors:
+  - given-names: "SomaOS"
+    family-names: "Team"
+    affiliation: "SomaOS (Beijing) Technology Development Co., Ltd."
+repository-code: "https://github.com/13717930620-alt/somaos-next-motor-brain-so100"
+repository-artifact: "https://github.com/13717930620-alt/somaos-next-motor-brain-so100/releases/tag/v1.0.0"
+url: "https://somaos.dev"
+abstract: >-
+  Modular pipeline robot brain with V2 goal pipeline, physics kinematics, 4-level
+  degradation chain, language cognition, and pure-JS behavior cloning for SO-100
+  6-DoF dual-arm leader-follower platform.
+keywords:
+  - robotics
+  - behavior-cloning
+  - modular-pipeline
+  - embodied-ai
+  - vision-language-action
+  - sim-to-real
+  - dual-arm
+  - leader-follower
+  - imitation-learning
+license: "Apache-2.0"
+version: "1.0.0"
+date-released: "2026-09-08"
