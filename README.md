@@ -14,7 +14,7 @@
 | 验证状态 (Validation) | **仅仿真验证 (simulation only)** — 安全门控过滤与轨迹跟随执行链路已对虚拟舵机模型闭环运行; v1.2.0 目标理解管线经 15 项单元测试 + mock 后端端到端验证 |
 | 真机状态 (Real robot) | **尚未在真实 SO-100 硬件部署** — 真机集成进行中 |
 | 计算环境 (仿真) | x86 桌面, Windows 11 / Ubuntu 22.04 |
-| 证据形式 | ① 本仓库可运行 demo (确定性, 结果可复现) ② 闭源二进制运行时 (GitHub Release [v1.2.0-bin](https://github.com/13717930620-alt/somaos-next-motor-brain-so100/releases/tag/v1.2.0-bin), mock 后端 `/health` 与 `POST /goal` 中英双语全链路自检通过) ③ 闭源容器 (demo/ service 双模式) |
+| 证据形式 | ① 本仓库可运行 demo (确定性, 结果可复现) ② 闭源运行时 (GitHub Release [v1.2.1-bin](https://github.com/13717930620-alt/somaos-next-motor-brain-so100/releases/tag/v1.2.1-bin), 混淆JS, 任何 Node.js 18+ LTS 跨平台, mock 后端 `/health` 与 `POST /goal` 中英双语全链路自检通过) ③ 闭源容器 (demo/ service 双模式) |
 
 ---
 
@@ -73,10 +73,10 @@ v1.2.0 在原「安全执行内核」之上增加了自然语言目标入口 `PO
 
 ## 闭源二进制运行时 (GitHub Release — 下载即跑, 免源码)
 
-完整运动脑运行时已编译为 V8 字节码发布 (无任何可读源码 / 权重 / 凭据):
+完整运动脑运行时已编译为混淆 JavaScript 发布 (无任何可读源码 / 权重 / 凭据, 任何 Node.js 18+ LTS 跨平台运行):
 
-1. 从 [Release v1.2.0-bin](https://github.com/13717930620-alt/somaos-next-motor-brain-so100/releases/tag/v1.2.0-bin)
-   下载 `somaos-brain-next-bin-1.2.0.zip`
+1. 从 [Release v1.2.1-bin](https://github.com/13717930620-alt/somaos-next-motor-brain-so100/releases/tag/v1.2.1-bin)
+   下载 `somaos-brain-next-bin-1.2.1.zip`
 2. 解压后仅需 Node.js 18+ (零外部依赖, 纯 Node 内置模块):
 
 ```bash
